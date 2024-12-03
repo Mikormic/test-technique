@@ -23,7 +23,9 @@ class EventFactory extends Factory
     {
         return [
             'title' => $this->faker->jobTitle(),
-            'starts_at' => $this->faker->dateTimeThisYear()
+            'starts_at' => $this->faker->dateTimeThisYear(),
+            'ends_at' => $this->faker->dateTimeThisYear('+2 months') 
+            // utilisation de la librairie Faker
         ];
     }
 }
