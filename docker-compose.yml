@@ -51,7 +51,7 @@ services:
             UPLOAD_LIMIT: 10M
     web:
         container_name: web
-        build: npm run dev
+        build: .
         depends_on:
             db:
                 condition: service_healthy
