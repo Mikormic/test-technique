@@ -37,7 +37,7 @@ const onSubmit = () => {
 
     const startsAt = moment(form.starts_at, "YYYY-MM-DDTHH:mm", true);
     const endsAt = moment(form.ends_at, "YYYY-MM-DDTHH:mm", true);
-    
+
     const formSend = {
         title: form.title,
         starts_at: startsAt.format("YYYY-MM-DD HH:mm"),
@@ -75,33 +75,17 @@ const onClose = () => {
             <template #header>{{
                 editing ? "Edit event" : "Add new event"
             }}</template>
-
-            <Input
-                name="title"
-                label="Title"
-                v-model="form.title"
-                class="mb-6"
-            />
-            <Input
-                name="starts_at"
-                label="Start Date"
-                type="datetime-local"
-                v-model="form.starts_at"
-                class="mb-6"
-            />
-            <Input
-                name="ends_at"
-                label="End Date"
-                type="datetime-local"
-                v-model="form.ends_at"
-                class="mb-6"
-            />
-
+            <form @submit.prevent="onSubmit">
+                <Input name="title" label="Title" v-model="form.title" class="mb-6" required />
+                <Input name="starts_at" label="Start Date" type="datetime-local" v-model="form.starts_at" class="mb-6"
+                    required />
+                <Input name="ends_at" label="End Date" type="datetime-local" v-model="form.ends_at" class="mb-6"
+                    required />
+                <Button variant="secondary" class="mr-3" @click="onClose">Cancel</Button>
+                <Button type="submit">Submit</Button>
+            </form>
             <template #footer>
-                <Button variant="secondary" class="mr-3" @click="onClose"
-                    >Cancel</Button
-                >
-                <Button @click="onSubmit">Submit</Button>
+
             </template>
         </Dialog>
     </div>

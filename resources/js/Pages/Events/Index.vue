@@ -7,6 +7,8 @@ import AddEditDialog from "./Partials/AddEditDialog";
 import Button from "@/Components/Common/Button";
 import Dialog from "@/Components/Common/DialogModal";
 import Table from "@/Components/Common/Table";
+import Input from "@/Components/Common/Input";
+import { title } from "process";
 
 const format = "YYYY-MM-DD";
 
@@ -15,6 +17,7 @@ const props = defineProps({
         type: Array,
         default: [],
     },
+    title: String,
     starts_at: String,
     ends_at: String,
 });
@@ -38,7 +41,7 @@ const onUpdate = () => {
     itemToEdit.value.starts_at = moment(itemToEdit.value.starts_at).format('YYYY-MM-DD HH:mm');
     itemToEdit.value.ends_at = moment(itemToEdit.value.ends_at).format('YYYY-MM-DD HH:mm');
 
-    Inertia.put(route("events.update", itemToEdit.value.id), {                                                                                                                                                                                                                                          
+    Inertia.put(route("events.update", itemToEdit.value.id), {
         title: itemToEdit.value.title,
         starts_at: itemToEdit.value.starts_at,
         ends_at: itemToEdit.value.ends_at,
@@ -75,23 +78,19 @@ const onDelete = () => {
                 </div>
                 <Dialog :show="itemToEdit != null" @close="itemToEdit = null">
                     <template #header>Edit event</template>
-                    <template #footer>
-                        <form>
-                            <div class="mb-4">
-                                <label for="title">Title:</label>
-                                <input type="text" id="title" v-model="itemToEdit.title" required />
+                    <div class="p-6">
+                        <form @submit.prevent="onUpdate">
+                            <Input name="title" label="Title" v-model="itemToEdit.title" class="mb-3" required />
+                            <Input name="starts_at" label="Start Date" type="datetime-local" v-model="itemToEdit.starts_at" class="mb-3" required />
+                            <Input name="ends_at" label="End Date" type="datetime-local" v-model="itemToEdit.ends_at" class="mb-3" required />
+                            <div class="mb-2">
+                                <Button variant="secondary" class="mr-3" @click="itemToEdit = null">Cancel</Button>
+                                <Button variant="danger" type="submit">Submit</Button>
                             </div>
-                            <div class="mb-4">
-                                <label for="starts_at">Starts at:</label>
-                                <input type="datetime-local" id="starts_at" v-model="itemToEdit.starts_at" required />
-                            </div>
-                            <div class="mb-4">
-                                <label for="ends_at">Ends at:</label>
-                                <input type="datetime-local" id="ends_at" v-model="itemToEdit.ends_at" required />
-                            </div>
-                            <Button variant="secondary" class="mr-3" @click="itemToEdit = null">Cancel</Button>
-                            <Button variant="danger" @click="onUpdate">Submit</Button>
                         </form>
+                    </div>
+                    <template #footer>
+
                     </template>
                 </Dialog>
                 <Dialog :show="itemToDelete != null" @close="itemToDelete = null">
