@@ -33,6 +33,20 @@ mix.js('resources/js/app.js', 'public/js')
         ziggy: "vendor/tightenco/ziggy/dist/vue",
     }).vue({ version: 3 });
 
+    // BrowserSync configuration
+mix.browserSync({
+    proxy: 'http://localhost', // URL de ton application (APP_URL dans ton `.env`)
+    files: [
+        'resources/views/**/*.blade.php', // Fichiers Blade
+        'resources/js/**/*.js',          // Fichiers JS
+        'resources/css/**/*.css',        // Fichiers CSS
+        'public/js/**/*.js',             // Fichiers JS compilés
+        'public/css/**/*.css',           // Fichiers CSS compilés
+    ],
+    open: false, // Empêche d'ouvrir automatiquement le navigateur
+    notify: false, // Désactive les notifications dans le navigateur
+});
+
 if (mix.inProduction()) {
     mix.version();
 }

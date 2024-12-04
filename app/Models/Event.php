@@ -11,6 +11,9 @@ class Event extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'title', 'starts_at', 'ends_at'
+    ];
     /**
      * Gets the user the event belongs to.
      */

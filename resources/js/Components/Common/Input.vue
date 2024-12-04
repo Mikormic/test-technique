@@ -2,12 +2,16 @@
 import { onMounted, ref } from "vue";
 
 defineProps({
-  modelValue: String,
+  modelValue: [String, Date],
   label: String,
   name: {
     type: String,
     required: true,
   },
+  type: {
+    type: String,
+    default: "text"
+  }
 });
 
 defineEmits(["update:modelValue"]);
@@ -30,6 +34,7 @@ defineExpose({ focus: () => input.value.focus() });
     </label>
     <input
       :name="name"
+      :type="type"
       ref="input"
       class="p-3 w-full outline-0 border border-gray-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm transition"
       :value="modelValue"

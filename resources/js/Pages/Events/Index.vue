@@ -34,6 +34,20 @@ onMounted(() => {
 const itemToEdit = ref(null);
 const itemToDelete = ref(null);
 
+const onUpdate = () => {
+    itemToEdit.value.starts_at = moment(itemToEdit.value.starts_at).format('YYYY-MM-DD HH:mm');
+    itemToEdit.value.ends_at = moment(itemToEdit.value.ends_at).format('YYYY-MM-DD HH:mm');
+
+    Inertia.put(route("events.update", itemToEdit.value.id), {                                                                                                                                                                                                                                          
+        title: itemToEdit.value.title,
+        starts_at: itemToEdit.value.starts_at,
+        ends_at: itemToEdit.value.ends_at,
+        preserveScroll: true,
+        onSuccess: () => {
+            itemToEdit.value = null;
+        },
+    });
+}
 const onDelete = () => {
     Inertia.delete(route("events.destroy", itemToDelete.value.id), {
         preserveScroll: true,
@@ -56,28 +70,36 @@ const onDelete = () => {
             <div class="mb-3">
                 <div class="mb-6 flex flex-row justify-between items-end">
                     <div>
-                        <AddEditDialog
-                            :item-to-edit="itemToEdit"
-                            @close="itemToEdit = null"
-                        />
+                        <AddEditDialog />
                     </div>
                 </div>
-                <Dialog
-                    :show="itemToDelete != null"
-                    @close="itemToDelete = null"
-                >
+                <Dialog :show="itemToEdit != null" @close="itemToEdit = null">
+                    <template #header>Edit event</template>
+                    <template #footer>
+                        <form>
+                            <div class="mb-4">
+                                <label for="title">Title:</label>
+                                <input type="text" id="title" v-model="itemToEdit.title" required />
+                            </div>
+                            <div class="mb-4">
+                                <label for="starts_at">Starts at:</label>
+                                <input type="datetime-local" id="starts_at" v-model="itemToEdit.starts_at" required />
+                            </div>
+                            <div class="mb-4">
+                                <label for="ends_at">Ends at:</label>
+                                <input type="datetime-local" id="ends_at" v-model="itemToEdit.ends_at" required />
+                            </div>
+                            <Button variant="secondary" class="mr-3" @click="itemToEdit = null">Cancel</Button>
+                            <Button variant="danger" @click="onUpdate">Submit</Button>
+                        </form>
+                    </template>
+                </Dialog>
+                <Dialog :show="itemToDelete != null" @close="itemToDelete = null">
                     <template #header>Deleting event</template>
                     Are you sure you want to delete this event ?
                     <template #footer>
-                        <Button
-                            variant="secondary"
-                            class="mr-3"
-                            @click="itemToDelete = null"
-                            >Cancel</Button
-                        >
-                        <Button variant="danger" @click="onDelete"
-                            >Submit</Button
-                        >
+                        <Button variant="secondary" class="mr-3" @click="itemToDelete = null">Cancel</Button>
+                        <Button variant="danger" @click="onDelete">Submit</Button>
                     </template>
                 </Dialog>
             </div>
@@ -91,23 +113,11 @@ const onDelete = () => {
                         {{ moment(item.ends_at).format("HH:mm DD/MM/YYYY") }}
                     </td>
                     <td>
-                        <span
-                            class="px-2 text-gray-700 hover:text-blue-500 cursor-pointer transition"
-                        >
-                            <vue-feather
-                                type="edit"
-                                size="1.3rem"
-                                @click="itemToEdit = item"
-                            />
+                        <span class="px-2 text-gray-700 hover:text-blue-500 cursor-pointer transition">
+                            <vue-feather type="edit" size="1.3rem" @click="itemToEdit = item" />
                         </span>
-                        <span
-                            class="px-2 text-gray-700 hover:text-red-500 cursor-pointer transition"
-                        >
-                            <vue-feather
-                                type="trash"
-                                size="1.3rem"
-                                @click="itemToDelete = item"
-                            />
+                        <span class="px-2 text-gray-700 hover:text-red-500 cursor-pointer transition">
+                            <vue-feather type="trash" size="1.3rem" @click="itemToDelete = item" />
                         </span>
                     </td>
                 </template>

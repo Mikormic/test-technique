@@ -19,8 +19,8 @@ const editing = ref(false);
 
 const form = useForm({
     title: "",
-    starts_at: null,
-    ends_at: null,
+    starts_at: "",
+    ends_at: "",
 });
 
 // Called when the user clicks on the "Add new" button
@@ -35,6 +35,7 @@ const onSubmit = () => {
     const transform = (data) => ({
         ...data,
         starts_at: data.starts_at.format("YYYY-MM-DD HH:mm"),
+        ends_at: data.ends_at.format("YYYY-MM-DD HH:mm"),
     });
 
     const requestParams = {
@@ -76,6 +77,20 @@ const onClose = () => {
                 name="title"
                 label="Title"
                 v-model="form.title"
+                class="mb-6"
+            />
+            <Input
+                name="starts_at"
+                label="Start Date"
+                type="datetime-local"
+                v-model="form.starts_at"
+                class="mb-6"
+            />
+            <Input
+                name="ends_at"
+                label="End Date"
+                type="datetime-local"
+                v-model="form.ends_at"
                 class="mb-6"
             />
 

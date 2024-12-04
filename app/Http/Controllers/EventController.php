@@ -28,12 +28,16 @@ class EventController extends Controller
     {
         $data = Request::validate([
             'title' => ['required', 'max:255'],
-            'starts_at' => ['required', 'date:Y-m-d H:i']
+            'starts_at' => ['required', 'date:Y-m-d H:i'],
+            'ends_at' => ['required', 'date:Y-m-d H:i']
+
         ]);
 
         Event::create([
             ...$data,
-            'starts_at' => Carbon::createFromFormat('Y-m-d H:i', $data['starts_at'])
+            'starts_at' => Carbon::createFromFormat('Y-m-d H:i', $data['starts_at']),
+            'ends_at' => Carbon::createFromFormat('Y-m-d H:i', $data['ends_at'])
+
         ]);
 
         return Redirect::back();
@@ -43,12 +47,15 @@ class EventController extends Controller
     {
         $data = Request::validate([
             'title' => ['required', 'max:255'],
-            'starts_at' => ['required', 'date:Y-m-d H:i']
+            'starts_at' => ['required', 'date:Y-m-d H:i'],
+            'ends_at' => ['required', 'date:Y-m-d H:i']
         ]);
 
         $event->update([
             ...$data,
-            'starts_at' => Carbon::createFromFormat('Y-m-d H:i', $data['starts_at'])
+            'starts_at' => Carbon::createFromFormat('Y-m-d H:i', $data['starts_at']),
+            'ends_at' => Carbon::createFromFormat('Y-m-d H:i', $data['ends_at'])
+
         ]);
 
         return Redirect::back();
