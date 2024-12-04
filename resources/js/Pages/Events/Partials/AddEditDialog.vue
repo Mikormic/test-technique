@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
+import { Inertia } from "@inertiajs/inertia";
+import moment from "moment";
 import Dialog from "@/Components/Common/DialogModal";
 import Button from "@/Components/Common/Button";
 import Input from "@/Components/Common/Input";
@@ -32,11 +34,15 @@ const onAddNew = () => {
 
 // Called when the user submits the form
 const onSubmit = () => {
-    const transform = (data) => ({
-        ...data,
-        starts_at: data.starts_at.format("YYYY-MM-DD HH:mm"),
-        ends_at: data.ends_at.format("YYYY-MM-DD HH:mm"),
-    });
+
+    const startsAt = moment(form.starts_at, "YYYY-MM-DDTHH:mm", true);
+    const endsAt = moment(form.ends_at, "YYYY-MM-DDTHH:mm", true);
+    
+    const formSend = {
+        title: form.title,
+        starts_at: startsAt.format("YYYY-MM-DD HH:mm"),
+        ends_at: endsAt.format("YYYY-MM-DD HH:mm"),
+    }
 
     const requestParams = {
         preserveScroll: true,
@@ -45,12 +51,9 @@ const onSubmit = () => {
 
     // Stores or updates the item
     if (editing.value) {
-        form.transform(transform).put(
-            route("events.update", props.itemToEdit.id),
-            requestParams,
-        );
+        Inertia.put(route("events.update", props.itemToEdit.id), formSend, requestParams);
     } else {
-        form.transform(transform).post(route("events.store"), requestParams);
+        Inertia.post(route("events.store"), formSend, requestParams);
     }
 };
 
