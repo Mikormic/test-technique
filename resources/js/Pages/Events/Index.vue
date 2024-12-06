@@ -9,6 +9,9 @@ import Dialog from "@/Components/Common/DialogModal";
 import Table from "@/Components/Common/Table";
 import Input from "@/Components/Common/Input";
 import { title } from "process";
+import CalendarPopup from "@/Components/Common/DateTimePickers/Partials/CalendarPopup.vue";
+import DateRangePicker from "@/Components/Common/DateTimePickers/DateRangePicker.vue";
+import DateTimePicker from "@/Components/Common/DateTimePickers/DateTimePicker.vue";
 
 const format = "YYYY-MM-DD";
 
@@ -70,10 +73,13 @@ const onDelete = () => {
         </template>
 
         <div class="card">
+            <DateRangePicker v-model="dateFilters" />
+            <DateTimePicker />
             <div class="mb-3">
                 <div class="mb-6 flex flex-row justify-between items-end">
                     <div>
                         <AddEditDialog />
+
                     </div>
                 </div>
                 <Dialog :show="itemToEdit != null" @close="itemToEdit = null">
@@ -81,8 +87,10 @@ const onDelete = () => {
                     <div class="p-6">
                         <form @submit.prevent="onUpdate">
                             <Input name="title" label="Title" v-model="itemToEdit.title" class="mb-3" required />
-                            <Input name="starts_at" label="Start Date" type="datetime-local" v-model="itemToEdit.starts_at" class="mb-3" required />
-                            <Input name="ends_at" label="End Date" type="datetime-local" v-model="itemToEdit.ends_at" class="mb-3" required />
+                            <Input name="starts_at" label="Start Date" type="datetime-local"
+                                v-model="itemToEdit.starts_at" class="mb-3" required />
+                            <Input name="ends_at" label="End Date" type="datetime-local" v-model="itemToEdit.ends_at"
+                                class="mb-3" required />
                             <div class="mb-2">
                                 <Button variant="secondary" class="mr-3" @click="itemToEdit = null">Cancel</Button>
                                 <Button variant="danger" type="submit">Submit</Button>
@@ -126,3 +134,4 @@ const onDelete = () => {
 </template>
 
 <style scoped></style>
+<!-- TO DO fermer la pop up de la modal de l'update -->

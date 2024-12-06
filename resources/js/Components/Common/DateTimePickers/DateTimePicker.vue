@@ -2,7 +2,7 @@
 import { computed, ref } from "vue";
 import moment from "moment";
 import Button from "../Button";
-import Calendar from "./Partials/CalendarPopup";
+import CalendarPopup from "./Partials/CalendarPopup";
 
 defineEmits(["update:modelValue"]);
 
@@ -54,23 +54,25 @@ const format = computed(() => {
       <span v-if="label">{{ label }}</span>
     </label>
     <div class="relative">
-      <button
+      <Button
         class="px-3 h-12 w-full border border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm text-left"
-        @click="showPopup = true"
+        @click="showPopup = !showPopup"
         @blur="onBlur"
       >
         {{modelValue?.format(format)}}
-        <Calendar
+        <CalendarPopup
+        v-if="showPopup"
           :show="showPopup"
           :value="modelValue"
           :with-date="hasDate"
           :with-time="hasTime"
           @change="$emit('update:modelValue', $event)"
         />
-      </button>
+      </Button>
     </div>
   </div>
 </template>
 
 <style lang="postcss" scoped>
 </style>
+<!-- TO DO Terminer le design et lié le tout à la bdd, faire en sorte à ce que seulement le click extérieur ferme la pop up-->

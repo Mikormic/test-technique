@@ -1,7 +1,8 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import moment from "moment";
-import Calendar from "./Partials/CalendarPopup";
+import CalendarPopup from "./Partials/CalendarPopup.vue";
+import Button from "../Button.vue";
 
 const format = "DD/MM/YYYY";
 
@@ -17,84 +18,74 @@ const props = defineProps({
 });
 
 const endDatePicker = ref(null);
-
-// Represents whether or not the datepicker popup is open for each field
-const showStartDatePopup = ref(false);
-const showEndDatePopup = ref(false);
+const showStartDatePopup = ref(true);
+const showEndDatePopup = ref(true);
 
 const onStartDateChange = (date) => {
-  // Timeouts are used to ensure that the event is launched after the blur event
-  setTimeout(() => {
-    emit("update:modelValue", [date, props.modelValue?.[1]]);
-    // Open the next field if no value exists
-    if (!props.modelValue?.[1]) {
-      endDatePicker.value.focus();
-      endDatePicker.value.click();
-    }
-    showStartDatePopup.value = false;
-  }, 0);
+  emit("update:modelValue", [date, props.modelValue?.[1]]);
 };
 
 const onEndDateChange = (date) => {
-  // Timeouts are used to ensure that the event is launched after the blur event
-  setTimeout(() => {
-    emit("update:modelValue", [props.modelValue?.[0], date]);
-    showEndDatePopup.value = false;
-  }, 0);
+  emit("update:modelValue", [props.modelValue?.[0], date]);
 };
 
-// Common event fired after one of the date picker buttons loses focus
-const onBlur = (event) => {
-  // Check if the clicked item was inside the current component
-  if (!event.currentTarget.contains(event.relatedTarget)) {
-    showStartDatePopup.value = false;
-    showEndDatePopup.value = false;
-  } else {
-    event.currentTarget.focus();
-  }
-};
+const dateRange = computed(() => {
+  return {
+    start: props.modelValue[0],
+    end: props.modelValue[1]
+  };
+});
 </script>
 
 <template>
-  <div class="grid grid-cols-2">
-    <label class="block font-medium text-sm text-gray-700">
-      <span>From</span>
-    </label>
-    <label class="block font-medium text-sm text-gray-700">
-      <span>To</span>
-    </label>
-    <button class="date-button rounded-l-md" @click="showStartDatePopup = true" @blur="onBlur">
-      <div>
-        {{modelValue?.[0]?.format(format)}}
-        <Calendar
-          :show="showStartDatePopup"
-          :value="modelValue?.[0]"
-          :with-time="false"
-          @change="onStartDateChange"
-        />
+  <div class="max-w-xl mx-auto">
+    <div class="bg-white border border-gray-300 rounded-lg shadow-lg p-6">
+      <div class="grid grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            From
+          </label>
+          <Button 
+            class="date-button mb-4"
+            @click="showStartDatePopup = !showStartDatePopup"
+          >
+            {{ modelValue?.[0]?.format(format) || 'Select start date' }}
+          </Button>
+          <CalendarPopup
+            v-if="showStartDatePopup"
+            :value="modelValue?.[0]"
+            :with-time="false"
+            :date-range="dateRange"
+            @change="onStartDateChange"
+            class="w-full"
+          />
+        </div>
+        
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            To
+          </label>
+          <Button 
+            ref="endDatePicker"
+            class="date-button mb-4"
+            @click="showEndDatePopup = !showEndDatePopup"
+          >
+            {{ modelValue?.[1]?.format(format) || 'Select end date' }}
+          </Button>
+          <CalendarPopup
+            v-if="showEndDatePopup"
+            :value="modelValue?.[1]"
+            :with-time="false"
+            :date-range="dateRange"
+            @change="onEndDateChange"
+            class="w-full"
+          />
+        </div>
       </div>
-    </button>
-    <button
-      ref="endDatePicker"
-      class="date-button rounded-r-md"
-      @click="showEndDatePopup = true"
-      @blur="onBlur"
-    >
-      <div>
-        {{modelValue?.[1]?.format(format)}}
-        <Calendar
-          :show="showEndDatePopup"
-          :value="modelValue?.[1]"
-          :with-time="false"
-          @change="onEndDateChange"
-        />
-      </div>
-    </button>
+    </div>
   </div>
 </template>
 
 <style lang="postcss" scoped>
-.date-button {
-  @apply relative px-3 h-12 w-full border border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 shadow-sm;
-}
 </style>
+<!-- TO DO Terminer le design et lié le tout à la bdd, faire une vraie pop up via un bouton-->
